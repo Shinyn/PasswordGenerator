@@ -12,8 +12,25 @@ public class FirstScript : MonoBehaviour
 
     private void Start()
     {
+        slider.onValueChanged.AddListener(delegate { SliderChanged(); });
+        Screen.orientation = ScreenOrientation.LandscapeRight;
         slider.minValue = 8;
         slider.maxValue = 128;
+    }
+
+    void SliderChanged() // Ändrar tmPro till lösenordet som randomiseras fram när man flyttar slidern vid varje förflyttning
+    {
+        string password = "";
+        int passwordLength = (int)slider.value;
+
+        for (int i = 0; i < passwordLength; i++)
+        {
+            char c = (char)(Random.Range(33, 126));
+            password = password + c;
+        }
+
+        //passwords.Add(password);
+        tmPro.SetText("New password: " + password);
     }
 
     void Update()
@@ -88,6 +105,30 @@ public class FirstScript : MonoBehaviour
 
             passwords.Add(password);
             tmPro.SetText("New password: " + password);
+        }
+    }
+
+    private void OnMouseDown() // PurpleSquare
+    {
+        string password = "";
+        int passwordLength = (int)slider.value;
+
+        for (int i = 0; i < passwordLength; i++)
+        {
+            char c = (char)(Random.Range(33, 126));
+            password = password + c;
+        }
+
+        passwords.Add(password);
+        tmPro.SetText("New password: " + password);
+    }
+
+    void RandomTouchPassword()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            // Sätt den på slidern så det fungerar på mobil?
         }
     }
 

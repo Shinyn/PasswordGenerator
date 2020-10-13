@@ -18,7 +18,7 @@ public class FirstScript : MonoBehaviour
 
     void Update()
     {
-        RandomizePassword((int)slider.value);
+        RandomizePassword((int)slider.value);  // Gör så att den randomiserar fram och visar ett nytt lösenord varje gång slidern flyttas
         ShowPasswords();
         TheDevilSpeaksFromTheVoid();
         ClearPasswordsFromList();

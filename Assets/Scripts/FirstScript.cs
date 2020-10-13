@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class FirstScript : MonoBehaviour
 {
-
-    // TO-DO - Fixa slider eller input för att bestämma lösenordets storlek
-
     List<string> passwords = new List<string>();
     public TextMeshPro tmPro;
+    public Slider slider;
 
+    private void Start()
+    {
+        slider.minValue = 8;
+        slider.maxValue = 128;
+    }
 
     void Update()
     {
-        RandomizePassword();
+        RandomizePassword((int)slider.value);
         ShowPasswords();
         TheDevilSpeaksFromTheVoid();
         ClearPasswordsFromList();
@@ -64,18 +68,19 @@ public class FirstScript : MonoBehaviour
             foreach (string password in passwords)
             {
                 tmp = tmp + password + "\n";
-                tmPro.SetText("These are your saved passwords: \n" + tmp); // fixa scroll
+                tmPro.SetText("These are your saved passwords: \n" + tmp);
             }
         }
     }
 
-    void RandomizePassword() // Nästa steg är att låta användaren bestämma längd på password
+    // Skulle kunna göra så att den randomiserar fram unika symboler / inte 2 av samma i rad osv
+    void RandomizePassword(int passwordLength)
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
             string password = "";
 
-            for (int i = 0; i < 15; i++) // Skulle kunna göra så att den randomiserar fram unika symboler / inte 2 av samma i rad osv
+            for (int i = 0; i < passwordLength; i++)
             {
                 char c = (char)(Random.Range(33, 126));  
                 password = password + c;
@@ -84,12 +89,6 @@ public class FirstScript : MonoBehaviour
             passwords.Add(password);
             tmPro.SetText("New password: " + password);
         }
-    }
-
-
-    public string GetSomeString()
-    {
-        return "This is comming from a function";
     }
 
     public void CopyToClipboard()
@@ -101,7 +100,7 @@ public class FirstScript : MonoBehaviour
             foreach (string password in passwords)
             {
                 tmp = tmp + password + "\n";
-                tmPro.SetText("Copied to Clipboard"); // fixa scroll
+                tmPro.SetText("Copied to Clipboard");
             }
 
             tmp.CopyToClipboard();

@@ -8,14 +8,18 @@ public class FirstScript : MonoBehaviour
 {
     List<string> passwords = new List<string>();
     public TextMeshProUGUI tmProUI;
+    public TextMeshProUGUI charCounter;
     public Slider slider;
+    public Button copyToClipBoardButton;
 
     private void Start()
     {
         slider.onValueChanged.AddListener(delegate { SliderChanged(); });
-        Screen.orientation = ScreenOrientation.LandscapeRight;
+        //Screen.orientation = ScreenOrientation.LandscapeRight;
         slider.minValue = 8;
         slider.maxValue = 128;
+        Button clipboardButton = copyToClipBoardButton.GetComponent<Button>();
+        clipboardButton.onClick.AddListener(CopyToClipBoardBtn);
     }
 
     void SliderChanged() // Ändrar tmProUI till lösenordet som randomiseras fram när man flyttar slidern vid varje förflyttning
@@ -31,13 +35,14 @@ public class FirstScript : MonoBehaviour
 
         passwords.Add(password);
         tmProUI.SetText("New password: " + password);
+        charCounter.SetText("Number of characters: " + slider.value);
     }
 
     void Update()
     {
         RandomizePassword((int)slider.value);  // Gör så att den randomiserar fram och visar ett nytt lösenord varje gång slidern flyttas
         ShowPasswords();
-        TheDevilSpeaksFromTheVoid();
+        //TheDevilSpeaksFromTheVoid();
         ClearPasswordsFromList();
         CopyToClipboard();
     }
@@ -65,7 +70,7 @@ public class FirstScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && passwords.Count == 0)
         {
-            tmProUI.SetText("The Devil is silent...");
+            tmProUI.SetText("The Devil is silent..." + passwords.Count);
         }
     }
     
@@ -110,6 +115,7 @@ public class FirstScript : MonoBehaviour
 
     private void OnMouseDown() // PurpleSquare
     {
+        /*
         string password = "";
         int passwordLength = (int)slider.value;
 
@@ -121,6 +127,16 @@ public class FirstScript : MonoBehaviour
 
         passwords.Add(password);
         tmProUI.SetText("New password: " + password);
+        */
+    }
+
+    public void CopyToClipBoardBtn()
+    {
+        string tmp = "";
+        int number = passwords.Count;
+        tmp = passwords[number - 1];
+        tmProUI.SetText("Copied to Clipboard");
+        tmp.CopyToClipboard();
     }
 
     public void CopyToClipboard()

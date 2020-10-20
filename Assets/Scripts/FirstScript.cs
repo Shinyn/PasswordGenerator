@@ -12,8 +12,34 @@ public class FirstScript : MonoBehaviour
     public Slider slider;
     public Button copyToClipBoardButton;
 
+    // Appvision: Den ultimata randomiseraren. Randomisera ALLT!... eller ultimata inspirationen för kreativa personer. :D
+
+    // Lägg till fler alternativ till alla.
+    string[] materials = {"Plastic", "Wood", "Metal", "Edible", "Organic", "Paper"};
+    string[] scale = {"Giant", "Mini", "Pocket", "Portable", "Wearable", "Inhabitable"};
+    string[] device = {"Robot", "Vehicle", "Computer", "Game", "Tool", "Art"};
+    string[] action = {"Flying", "Random", "Self-Build", "Underwater", "Stealth", "Disposable"};
+    string[] consumer = {"Family", "Personal", "Office", "Home", "Industrial", "Public"};
+    string[] poweredBy = {"Manual", "Electric", "Solar", "Wind", "Water", "Clockwork"};
+
+    void InspirationGenerator()
+    {
+        int theMaterial = Random.Range(1, materials.Length);
+        int theScale = Random.Range(1, scale.Length);
+        int theDevice = Random.Range(1, device.Length);
+        int theAction = Random.Range(1, action.Length);
+        int theConsumer = Random.Range(1, consumer.Length);
+        int thePoweredBy = Random.Range(1, poweredBy.Length);
+
+        string invention = materials[theMaterial] + " " + scale[theScale] + " " + device[theDevice] + " " + action[theAction] 
+            + " " + consumer[theConsumer] + " " + poweredBy[thePoweredBy];
+
+        Debug.Log("You should create: " + invention);
+    }
+
     private void Start()
     {
+        InspirationGenerator();
         slider.onValueChanged.AddListener(delegate { SliderChanged(); });
         //Screen.orientation = ScreenOrientation.LandscapeRight;
         slider.minValue = 8;
@@ -60,7 +86,7 @@ public class FirstScript : MonoBehaviour
         }
     }
 
-    void TheDevilSpeaksFromTheVoid()
+    void TheDevilSpeaksFromTheVoid() // Error - index out of bound & gör så att Button trycks ner efter nån kombo
     {
         if (Input.GetKeyDown(KeyCode.Space) && passwords.Count > 0)
         {
@@ -111,23 +137,6 @@ public class FirstScript : MonoBehaviour
             passwords.Add(password);
             tmProUI.SetText("New password: " + password);
         }
-    }
-
-    private void OnMouseDown() // PurpleSquare
-    {
-        /*
-        string password = "";
-        int passwordLength = (int)slider.value;
-
-        for (int i = 0; i < passwordLength; i++)
-        {
-            char c = (char)(Random.Range(33, 126));
-            password = password + c;
-        }
-
-        passwords.Add(password);
-        tmProUI.SetText("New password: " + password);
-        */
     }
 
     public void CopyToClipBoardBtn()

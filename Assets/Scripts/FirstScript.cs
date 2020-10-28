@@ -11,16 +11,18 @@ public class FirstScript : MonoBehaviour
     public TextMeshProUGUI charCounter;
     public Slider slider;
     public Button copyToClipBoardButton;
+    bool showingMessage = false;
+    float messageCooldown = 2f;
 
     // Appvision: Den ultimata randomiseraren. Randomisera ALLT!... eller ultimata inspirationen för kreativa personer. :D
 
-    // Lägg till fler alternativ till alla.
-    string[] materials = {"Plastic", "Wood", "Metal", "Edible", "Organic", "Paper"};
+    // Lägg till fler alternativ till alla. Importera bibliotek som täcker varje kategori.
+    string[] materials = {"Plastic", "Wood", "Metal", "Edible", "Organic", "Paper", "Concrete", "Sand", "Ceramic", "Textile"};
     string[] scale = {"Giant", "Mini", "Pocket", "Portable", "Wearable", "Inhabitable"};
     string[] device = {"Robot", "Vehicle", "Computer", "Game", "Tool", "Art"};
     string[] action = {"Flying", "Random", "Self-Build", "Underwater", "Stealth", "Disposable"};
     string[] consumer = {"Family", "Personal", "Office", "Home", "Industrial", "Public"};
-    string[] poweredBy = {"Manual", "Electric", "Solar", "Wind", "Water", "Clockwork"};
+    string[] poweredBy = {"Manual", "Electric", "Solar", "Wind", "Water", "Clockwork", "Gas", "Animal"};
 
     void InspirationGenerator()
     {
@@ -31,17 +33,18 @@ public class FirstScript : MonoBehaviour
         int theConsumer = Random.Range(1, consumer.Length);
         int thePoweredBy = Random.Range(1, poweredBy.Length);
 
-        string invention = materials[theMaterial] + " " + scale[theScale] + " " + device[theDevice] + " " + action[theAction] 
-            + " " + consumer[theConsumer] + " " + poweredBy[thePoweredBy];
+        string invention = scale[theScale] + ", " + materials[theMaterial] + ", " + action[theAction] + ", " +
+              poweredBy[thePoweredBy] + ", " +  device[theDevice] + " for the " + consumer[theConsumer];
 
-        Debug.Log("You should create: " + invention);
+        Debug.Log("Create a " + invention); // create a: giant, plastic, flying, solar robot for the family
     }
 
     private void Start()
     {
+        
         InspirationGenerator();
         slider.onValueChanged.AddListener(delegate { SliderChanged(); });
-        //Screen.orientation = ScreenOrientation.LandscapeRight;
+        Screen.orientation = ScreenOrientation.Portrait;
         slider.minValue = 8;
         slider.maxValue = 128;
         Button clipboardButton = copyToClipBoardButton.GetComponent<Button>();
@@ -58,19 +61,33 @@ public class FirstScript : MonoBehaviour
             char c = (char)(Random.Range(33, 126));
             password = password + c;
         }
-
+        passwords.Clear();
         passwords.Add(password);
-        tmProUI.SetText("New password: " + password);
+        tmProUI.SetText("New password: \n\n" + password);
         charCounter.SetText("Number of characters: " + slider.value);
+    }
+
+    void cooldown()
+    {
+        if (showingMessage)
+        {
+            if (messageCooldown > 0)
+            {
+                messageCooldown -= Time.deltaTime;
+            }
+            else
+            {
+                messageCooldown = 2f;
+                showingMessage = false;
+                int password = passwords.Count - 1;
+                tmProUI.SetText("New password: \n\n" + passwords[password]);
+            }
+        }
     }
 
     void Update()
     {
-        RandomizePassword((int)slider.value);  // Gör så att den randomiserar fram och visar ett nytt lösenord varje gång slidern flyttas
-        ShowPasswords();
-        //TheDevilSpeaksFromTheVoid();
-        ClearPasswordsFromList();
-        CopyToClipboard();
+        cooldown();
     }
 
     void ClearPasswordsFromList()
@@ -121,47 +138,14 @@ public class FirstScript : MonoBehaviour
         }
     }
 
-    // Skulle kunna göra så att den randomiserar fram unika symboler / inte 2 av samma i rad osv
-    void RandomizePassword(int passwordLength)
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            string password = "";
-
-            for (int i = 0; i < passwordLength; i++)
-            {
-                char c = (char)(Random.Range(33, 126));  
-                password = password + c;
-            }
-
-            passwords.Add(password);
-            tmProUI.SetText("New password: " + password);
-        }
-    }
-
     public void CopyToClipBoardBtn()
     {
         string tmp = "";
         int number = passwords.Count;
         tmp = passwords[number - 1];
         tmProUI.SetText("Copied to Clipboard");
+        showingMessage = true;
         tmp.CopyToClipboard();
-    }
-
-    public void CopyToClipboard()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            string tmp = "";
-
-            foreach (string password in passwords)
-            {
-                tmp = tmp + password + "\n";
-                tmProUI.SetText("Copied to Clipboard");
-            }
-
-            tmp.CopyToClipboard();
-        }
     }
 }
 
